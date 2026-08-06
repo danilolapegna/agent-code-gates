@@ -1,0 +1,22 @@
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build and coverage output
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Local, machine-specific overrides
+.env
+.env.local
+.agentgatesrc.local.json

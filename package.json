@@ -1,0 +1,54 @@
+{
+  "name": "agent-code-gates",
+  "version": "0.1.0",
+  "description": "Mechanical git gates that block AI-written code from being declared done when it isn't. Zero dependencies, any stack.",
+  "keywords": [
+    "git-hooks",
+    "commit-msg",
+    "pre-commit",
+    "code-quality",
+    "code-review",
+    "ai",
+    "llm",
+    "coding-agent",
+    "static-analysis",
+    "developer-tools",
+    "secret-detection",
+    "ci"
+  ],
+  "homepage": "https://github.com/danilolapegna/agent-code-gates#readme",
+  "bugs": {
+    "url": "https://github.com/danilolapegna/agent-code-gates/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danilolapegna/agent-code-gates.git"
+  },
+  "license": "MIT",
+  "author": "Danilo Lapegna",
+  "type": "module",
+  "bin": {
+    "agent-code-gates": "bin/agent-code-gates.js"
+  },
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./gates": "./src/gates/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node --test",
+    "gates": "node bin/agent-code-gates.js",
+    "selfcheck": "node bin/agent-code-gates.js --commit HEAD"
+  }
+}

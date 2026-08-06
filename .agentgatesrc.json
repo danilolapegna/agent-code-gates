@@ -1,0 +1,20 @@
+{
+  "gates": {
+    "TODO_DENSITY": {
+      "includeTests": false
+    },
+    "SKIPPED_TESTS": {
+      "exclude": ["test/**"]
+    },
+    "SECRET_SHAPED_LITERAL": {
+      "exclude": [
+        "**/*.example",
+        "**/*.example.*",
+        "**/*.sample",
+        "**/*.template",
+        "**/*.dist",
+        "test/**"
+      ]
+    }
+  }
+}
