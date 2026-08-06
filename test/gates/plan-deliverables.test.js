@@ -61,6 +61,21 @@ test('accepts statuses declared by item number', async () => {
   assert.equal(result.status, 'pass');
 });
 
+test('accepts a status word written with any separator', async () => {
+  const result = await runGate(gate, {
+    ...FIXTURE,
+    message: [
+      'feat: checkout tax rules',
+      '',
+      'Plan: docs/checkout-plan.md',
+      '- Apply regional tax rules at checkout: DONE',
+      '- Send the confirmation email: NOT STARTED',
+      '- Record the order in the audit log: not_started',
+    ].join('\n'),
+  });
+  assert.equal(result.status, 'pass');
+});
+
 test('treats items already checked off in the plan as reported', async () => {
   const result = await runGate(gate, {
     files: { 'docs/checkout-plan.md': '- [x] Add the cart summary component\n' },

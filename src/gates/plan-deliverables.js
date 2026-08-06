@@ -122,8 +122,12 @@ export default {
   defaults: {
     /** A markdown filename must match this to be treated as a plan. */
     planFilePattern: 'plan',
-    /** Words that count as an explicit status declaration. */
-    statuses: ['DONE', 'PARTIAL', 'NOT-STARTED', 'NOT STARTED', 'SKIPPED'],
+    /**
+     * Words that count as an explicit status declaration. Internal separators
+     * are matched loosely, so `NOT-STARTED`, `NOT STARTED` and `NOT_STARTED`
+     * are all the same word and only one of them needs listing here.
+     */
+    statuses: ['DONE', 'PARTIAL', 'NOT-STARTED', 'SKIPPED'],
     /** Fraction of an item's significant words a line must restate to match it. */
     matchThreshold: 0.5,
   },
@@ -152,7 +156,9 @@ export default {
     }
 
     const statusPattern = new RegExp(
-      `\\b(?:${options.statuses.map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`,
+      `\\b(?:${options.statuses
+        .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/[-_ ]/g, '[-_ ]'))
+        .join('|')})\\b`,
       'i',
     );
 
@@ -194,7 +200,7 @@ export default {
       status: 'fail',
       message:
         `${findings.length} of ${openItems} open plan item(s) are unaccounted for. ` +
-        `Add one line per item to the commit body with ${options.statuses.slice(0, 4).join(', ')}. ` +
+        `Add one line per item to the commit body with ${options.statuses.join(', ')}. ` +
         `Saying NOT-STARTED costs nothing; saying nothing is how work disappears.`,
       findings,
     };

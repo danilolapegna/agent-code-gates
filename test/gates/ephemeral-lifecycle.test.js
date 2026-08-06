@@ -97,9 +97,9 @@ test('fails when only the index is missing', async () => {
 test('recognises other expiry column names', async () => {
   const result = await runGate(gate, {
     files: {
-      'supabase/migrations/004_cache.sql': 'CREATE TABLE page_cache (key text PRIMARY KEY, valid_until timestamptz);\n',
+      'sql/migrations/004_cache.sql': 'CREATE TABLE page_cache (key text PRIMARY KEY, valid_until timestamptz);\n',
     },
-    changed: [{ path: 'supabase/migrations/004_cache.sql', status: 'A' }],
+    changed: [{ path: 'sql/migrations/004_cache.sql', status: 'A' }],
   });
   assert.equal(result.status, 'fail');
   assert.match(result.findings[0].excerpt, /valid_until/);

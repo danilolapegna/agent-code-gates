@@ -465,7 +465,7 @@ character). Anything else is literal.
 | | `justification` | `"Why monolith:"` |
 | | `listFiles` | `8` |
 | `PLAN_DELIVERABLES` | `planFilePattern` | `"plan"` |
-| | `statuses` | `["DONE", "PARTIAL", "NOT-STARTED", "NOT STARTED", "SKIPPED"]` |
+| | `statuses` | `["DONE", "PARTIAL", "NOT-STARTED", "SKIPPED"]` (separators matched loosely) |
 | | `matchThreshold` | `0.5` |
 | `TEST_FOR_NEW_LOGIC` | `minBranches` | `2` |
 | | `annotation` | `"test-debt-ack"` |

@@ -67,6 +67,17 @@ test('fails when an import of the deleted module survives', async () => {
   assert.ok(result.findings.some((finding) => finding.file === 'src/billing.js'));
 });
 
+test('reports one finding per line, not one per reason', async () => {
+  const result = await runGate(gate, {
+    files: { 'src/billing.js': 'import { formatInvoice } from "./lib/invoice.js";\nexport const label = formatInvoice;\n' },
+    before: { 'src/lib/invoice.js': DELETED },
+    changed: [{ path: 'src/lib/invoice.js', status: 'D' }],
+    repoFiles: ['src/billing.js'],
+  });
+  const locations = result.findings.map((finding) => `${finding.file}:${finding.line}`);
+  assert.equal(new Set(locations).size, locations.length);
+});
+
 test('fails when a deleted symbol is still called', async () => {
   const result = await runGate(gate, {
     files: { 'src/billing.js': 'export function label(order) {\n  return formatInvoice(order);\n}\n' },

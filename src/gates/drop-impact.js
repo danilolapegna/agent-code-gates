@@ -211,10 +211,17 @@ export default {
     const removedIdentities = new Map(removed.map((entry) => [moduleIdentity(entry.path), entry.path]));
     const findings = [];
     const perPath = new Map();
+    const reported = new Set();
 
     const record = (finding) => {
+      // One line, one finding. An import line also mentions the symbol it
+      // imports, so without this the same line is reported twice with two
+      // explanations, which reads as two problems.
+      const location = `${finding.file}:${finding.line}`;
+      if (reported.has(location)) return;
       const seen = perPath.get(finding.owner) ?? 0;
       if (seen >= options.maxFindingsPerPath) return;
+      reported.add(location);
       perPath.set(finding.owner, seen + 1);
       findings.push(finding);
     };

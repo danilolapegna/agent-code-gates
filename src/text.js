@@ -193,5 +193,5 @@ export function wordOverlap(expected, candidate) {
  */
 export function excerpt(line, max = 120) {
   const trimmed = (line ?? '').trim();
-  return trimmed.length <= max ? trimmed : `${trimmed.slice(0, max - 1)}…`;
+  return trimmed.length <= max ? trimmed : `${trimmed.slice(0, max - 3)}...`;
 }
