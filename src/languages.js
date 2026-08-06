@@ -151,6 +151,39 @@ export function isCommentLine(line, filePath) {
 }
 
 /**
+ * Extract the comment portion of a line, or an empty string when there is none.
+ *
+ * Gates that look for words inside comments must not settle for "the line
+ * contains a comment marker somewhere". A regular expression such as
+ * `/\s*todo\s*\(/` contains an asterisk immediately before a word, and an
+ * asterisk is how a block comment continues, so a naive check reads that line
+ * as a commented deferral marker. It is code.
+ *
+ * Two rules prevent that. A block-comment continuation only counts at the start
+ * of the line, and a line-comment marker only counts at the start of the line or
+ * after whitespace, which also keeps `"#tag"` inside a string literal from
+ * reading as a comment.
+ *
+ * @param {string} line Raw source line.
+ * @param {string} filePath Path the line came from, used to pick comment syntax.
+ * @returns {string} The comment text including its marker, or an empty string.
+ */
+export function commentTextOf(line, filePath) {
+  const trimmed = line.trimStart();
+  if (trimmed.startsWith('*') || trimmed.startsWith('/*') || trimmed.startsWith('<!--')) return trimmed;
+
+  let earliest = -1;
+  for (const opener of [...commentPrefixesFor(filePath), '/*', '<!--']) {
+    for (let at = line.indexOf(opener); at !== -1; at = line.indexOf(opener, at + 1)) {
+      if (at !== 0 && !/\s/.test(line[at - 1])) continue;
+      if (earliest === -1 || at < earliest) earliest = at;
+      break;
+    }
+  }
+  return earliest === -1 ? '' : line.slice(earliest);
+}
+
+/**
  * Whether a path holds program source, as opposed to docs, data or config.
  *
  * @param {string} filePath Repo-relative path.

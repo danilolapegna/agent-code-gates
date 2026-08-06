@@ -2,9 +2,9 @@
  * TODO_DENSITY: unannotated deferral markers introduced by this change.
  *
  * The failure this prevents is a comment being treated as work. An agent that
- * writes `// TODO: handle the empty case` has not handled the empty case, but
- * the file compiles, the tests pass, and the summary says the feature is done.
- * The marker is the only trace, and nothing reads it.
+ * leaves a deferral marker reading "handle the empty case" has not handled the
+ * empty case, but the file compiles, the tests pass, and the summary says the
+ * feature is done. The marker is the only trace, and nothing reads it.
  *
  * The gate scans added lines only. Scanning whole files would surface debt the
  * author did not create, which is the fastest way to teach people to bypass a
@@ -16,26 +16,23 @@
  */
 
 import { isAnnotated, excerpt } from '../text.js';
-import { commentPrefixesFor } from '../languages.js';
+import { commentTextOf } from '../languages.js';
 import { matchesAnyGlob } from '../glob.js';
 
 /**
  * Build the detector for the configured deferral tokens.
  *
- * The token must sit at the start of a comment: `todoList.push(x)` is code and
- * must not fire, while `// todo: fix` must. Word boundaries handle the first
- * case, the comment prefix requirement handles prose in string literals.
+ * Applied to the comment portion of a line, never the whole line. A variable
+ * named `todoList` is code and must not fire; word boundaries handle that, and
+ * restricting the search to comment text handles the same word appearing in a
+ * string literal or a regular expression.
  *
  * @param {string[]} tokens Marker words such as `TODO`.
- * @param {string[]} prefixes Comment prefixes valid for the file.
- * @returns {RegExp} Expression matching a comment-anchored marker.
+ * @returns {RegExp} Expression matching a marker inside comment text.
  */
-function markerPattern(tokens, prefixes) {
-  const escapedPrefixes = [...prefixes, '/*', '*', '<!--']
-    .map((prefix) => prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    .join('|');
-  const escapedTokens = tokens.map((token) => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-  return new RegExp(`(?:${escapedPrefixes})\\s*(?:@)?\\b(${escapedTokens})\\b`, 'i');
+function markerPattern(tokens) {
+  const escaped = tokens.map((token) => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  return new RegExp(`\\b(${escaped})\\b`, 'i');
 }
 
 export default {
@@ -77,6 +74,7 @@ export default {
    */
   run(ctx) {
     const options = ctx.config.gates[this.id];
+    const pattern = markerPattern(options.tokens);
     const fileLines = new Map();
     const findings = [];
 
@@ -85,8 +83,8 @@ export default {
       if (options.sourceOnly && !ctx.isSourcePath(added.file)) continue;
       if (matchesAnyGlob(added.file, options.exclude)) continue;
 
-      const pattern = markerPattern(options.tokens, commentPrefixesFor(added.file));
-      const match = added.text.match(pattern);
+      const comment = commentTextOf(added.text, added.file);
+      const match = comment === '' ? null : comment.match(pattern);
       if (!match) continue;
 
       if (!fileLines.has(added.file)) fileLines.set(added.file, ctx.readFile(added.file).split('\n'));

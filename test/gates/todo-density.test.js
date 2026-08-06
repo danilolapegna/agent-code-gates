@@ -30,6 +30,20 @@ test('passes when the annotation sits on the line above', async () => {
   assert.equal(result.status, 'pass');
 });
 
+test('ignores the marker word inside a regular expression or a string', async () => {
+  const result = await runGate(gate, {
+    files: {
+      'src/detector.js': [
+        `const pattern = /\\b(?:test|it)\\s*\\.\\s*${MARKER.toLowerCase()}\\s*\\(/;`,
+        `const label = "${MARKER.toLowerCase()}: not a real one";`,
+        'export default pattern;',
+        '',
+      ].join('\n'),
+    },
+  });
+  assert.equal(result.status, 'pass');
+});
+
 test('ignores an identifier that merely starts with the marker word', async () => {
   const result = await runGate(gate, {
     files: { 'src/list.js': `const ${MARKER.toLowerCase()}List = [];\nexport default ${MARKER.toLowerCase()}List;\n` },
