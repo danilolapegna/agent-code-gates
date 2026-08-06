@@ -155,7 +155,7 @@ export function isCommentLine(line, filePath) {
  *
  * Gates that look for words inside comments must not settle for "the line
  * contains a comment marker somewhere". A regular expression such as
- * `/\s*todo\s*\(/` contains an asterisk immediately before a word, and an
+ * `/\s*retry\s*\(/` puts an asterisk immediately before a word, and an
  * asterisk is how a block comment continues, so a naive check reads that line
  * as a commented deferral marker. It is code.
  *
