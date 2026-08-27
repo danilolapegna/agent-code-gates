@@ -9,7 +9,7 @@
 # sources in our repos. Keep it lean — every exclusion is a potential blind spot.
 #
 # Usage:
-#   gitleaks protect --staged --verbose --redact   # pre-commit (default)
+#   gitleaks git --staged --verbose --redact       # pre-commit (default)
 #   gitleaks dir . -v                              # full repo scan
 #   gitleaks git --log-opts="--all" -v             # git history scan
 #

@@ -49,6 +49,7 @@
   "scripts": {
     "test": "node --test",
     "gates": "node bin/agent-code-gates.js",
-    "selfcheck": "node bin/agent-code-gates.js --commit HEAD"
+    "selfcheck": "node bin/agent-code-gates.js --commit HEAD",
+    "test:coverage": "vitest run --coverage"
   }
 }

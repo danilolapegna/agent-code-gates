@@ -24,6 +24,22 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 
+/**
+ * The environment the suite deserves: the caller's, minus git's hook handoff.
+ *
+ * When this gate runs from a pre-commit hook, git exports GIT_DIR, GIT_INDEX_FILE,
+ * GIT_WORK_TREE and GIT_PREFIX. A suite that shells out to git — `git init` in a
+ * fixture, a temp repo per case — then has every one of those calls silently
+ * redirected at the repository being committed to, and fails for a reason that has
+ * nothing to do with the change under test. The suite must start where a developer
+ * starts it: from a terminal, with no repository already chosen for it.
+ */
+function gitFreeEnv() {
+  return Object.fromEntries(
+    Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')),
+  );
+}
+
 /** Skip reasons that describe a broken environment rather than an irrelevant suite. */
 const ENVIRONMENT_EXCUSE = /\b(?:can(?:no|')?t\s+(?:boot|run|start)|could\s?n[o']t\s+(?:boot|run|start)|did\s?n[o']t\s+(?:boot|run|start)|won[o']?t\s+(?:boot|run|start)|fail(?:s|ed)?\s+to\s+(?:boot|run|start)|module\s+not\s+found|not\s+installed|command\s+not\s+found|no\s+(?:runner|binary|interpreter)|runner\s+(?:missing|broken|unavailable)|native\s+module|environment\s+(?:issue|problem|broken)|missing\s+dependenc)/i;
 
@@ -88,7 +104,7 @@ export default {
         encoding: 'utf8',
         stdio: ['ignore', 'pipe', 'pipe'],
         timeout: options.timeoutMs,
-        env: { ...process.env, CI: process.env.CI ?? '1' },
+        env: { ...gitFreeEnv(), CI: process.env.CI ?? '1' },
       });
       return { status: 'pass', message: `\`${command}\` passed`, findings: [] };
     } catch (error) {
