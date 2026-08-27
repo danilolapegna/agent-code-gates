@@ -1,0 +1,65 @@
+# DL Solutions — gitleaks config (scaffold)
+#
+# GENERATED from the DL Solutions scaffold:
+#   Azienda/framework-core/scaffold/prebuild-gate/.gitleaks.toml
+# Copy into the target repo root as: .gitleaks.toml
+#
+# This EXTENDS the built-in default config (useDefault = true) and only adds
+# a small DL-specific allowlist for files/patterns that are known false-positive
+# sources in our repos. Keep it lean — every exclusion is a potential blind spot.
+#
+# Usage:
+#   gitleaks protect --staged --verbose --redact   # pre-commit (default)
+#   gitleaks dir . -v                              # full repo scan
+#   gitleaks git --log-opts="--all" -v             # git history scan
+#
+# Tuning rule (from task 86cb2arzy): run on two repos, count false positives.
+# If >10 per run, adjust this allowlist or disable noisy rules — don't widen blindly.
+#
+# References: https://github.com/gitleaks/gitleaks#configuration
+
+title = "DL Solutions gitleaks config"
+
+[extend]
+useDefault = true
+
+# Global allowlist — applied to every rule.
+# Keep regexes/paths anchored and specific; prefer file paths over secret substrings.
+[[allowlists]]
+description = "DL Solutions — test/example/artefact paths that are not secrets"
+paths = [
+  '''\.gitleaks\.toml$''',
+  '''\.env\.example$''',
+  '''\.env\.test$''',
+  '''(?:^|/)\.agent-framework/.*''',
+  '''(?:^|/)_smoke-evidence/.*''',
+  '''(?:^|/)_design-evidence/.*''',
+  '''(?:^|/)node_modules/.*''',
+  '''(?:^|/)\.git/.*''',
+  '''.*\.test\..*''',
+  '''.*\.spec\..*''',
+  '''(?:^|/)__tests__/.*''',
+  '''(?:^|/)tests/.*''',
+  '''(?:^|/)\.vercel/.*''',
+  '''(?:^|/)dist/.*''',
+  '''(?:^|/)\.output/.*''',
+  '''(?:^|/)sanity/dist/.*''',
+  '''(?:^|/)\.astro/.*''',
+  '''(?:^|/)\.next/.*''',
+  '''(?:^|/)_output/.*''',
+  # --- aggiunti 2026-08-27 dopo misura su 20 repo (3166 finding, 0 segreti veri) ---
+  '''(?:^|/)_evidence/.*''',
+  '''(?:^|/)_eval-evidence/.*''',
+  '''(?:^|/)coverage/.*''',
+  '''.*\.generated\..*''',
+  '''.*\.example$''',
+]
+
+[[allowlists]]
+description = "DL Solutions — example/fake/test placeholder secrets"
+regexTarget = "match"
+regexes = [
+  '''(?i)example''',
+  '''(?i)fake[_-]?key''',
+  '''(?i)test[_-]?key''',
+]
