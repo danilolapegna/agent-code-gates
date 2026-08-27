@@ -1,0 +1,27 @@
+# .gitleaksignore — DL Solutions
+#
+# Falsi positivi VERIFICATI uno per uno il 2026-08-27, quando il secrets gate
+# gitleaks e' stato armato in tutti i repo (install-gates.sh v1.9.1).
+#
+# Cosa c'e' dentro, e perche' non sono segreti:
+#   - anon key e publishable key Supabase: pubbliche per design, gia' nel bundle client
+#   - JWT sintetici nelle fixture: payload con il solo claim role, senza iss/ref/iat/exp
+#   - placeholder espliciti nei test (sk_live_abcd..., cron-canary-..., key-A-0123...)
+#   - stringhe UI, prosa e identificatori non segreti letti come chiavi da generic-api-key
+#
+# I file di test NON sono esclusi per path: un segreto vero in una fixture deve
+# bloccare. Per questo le righe di test qui sotto sono puntuali, una per riga.
+#
+# Il fingerprint include il numero di riga: se il file cambia e la riga si sposta,
+# il finding RITORNA e va rivisto. E' voluto: meglio rumore che cecita'.
+#
+# Un fingerprint nuovo qui dentro si aggiunge solo dopo aver verificato che non sia
+# un segreto vero. Per una chiave vera la risposta non e' questo file: e' ruotarla.
+
+test/gates/secret-shaped-literal.test.js:aws-access-token:45
+test/gates/secret-shaped-literal.test.js:aws-access-token:69
+test/gates/secret-shaped-literal.test.js:aws-access-token:72
+test/gates/secret-shaped-literal.test.js:aws-access-token:78
+test/gates/secret-shaped-literal.test.js:generic-api-key:29
+test/gates/secret-shaped-literal.test.js:generic-api-key:37
+test/gates/secret-shaped-literal.test.js:generic-api-key:53

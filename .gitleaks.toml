@@ -31,15 +31,16 @@ paths = [
   '''\.gitleaks\.toml$''',
   '''\.env\.example$''',
   '''\.env\.test$''',
+  # I file di TEST non sono piu' esclusi (2026-08-27). Lo erano, e significava che
+  # un segreto vero dentro una fixture passava in silenzio: e' un vettore di leak
+  # classico, non un caso di scuola. Misurato prima di togliere l'esclusione: 29
+  # finding su 6 repo, tutti placeholder espliciti piu' una anon key Supabase, ora
+  # in .gitleaksignore per fingerprint. Costo reale dell'inclusione: 29 righe.
   '''(?:^|/)\.agent-framework/.*''',
   '''(?:^|/)_smoke-evidence/.*''',
   '''(?:^|/)_design-evidence/.*''',
   '''(?:^|/)node_modules/.*''',
   '''(?:^|/)\.git/.*''',
-  '''.*\.test\..*''',
-  '''.*\.spec\..*''',
-  '''(?:^|/)__tests__/.*''',
-  '''(?:^|/)tests/.*''',
   '''(?:^|/)\.vercel/.*''',
   '''(?:^|/)dist/.*''',
   '''(?:^|/)\.output/.*''',
