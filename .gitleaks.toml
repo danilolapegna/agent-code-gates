@@ -5,7 +5,7 @@
 # every exclusion is a potential blind spot.
 #
 # Usage:
-#   gitleaks protect --staged --verbose --redact   # pre-commit (default)
+#   gitleaks git --staged --verbose --redact       # pre-commit (default)
 #   gitleaks dir . -v                              # full working-tree scan
 #   gitleaks git --log-opts="--all" -v             # full history scan
 #
