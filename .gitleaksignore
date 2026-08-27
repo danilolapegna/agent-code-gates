@@ -1,0 +1,25 @@
+# .gitleaksignore
+#
+# Known false positives, each one checked by hand before it was added here.
+#
+# Every entry below points at the tests of the secret-shaped-literal gate. A gate
+# that detects credentials has to ship fake credentials in its tests, otherwise
+# nothing proves that it works.
+#
+# Test files are NOT excluded by path: a real secret inside a fixture must still
+# block the commit. That is why the test lines below are listed one at a time.
+#
+# The fingerprint includes the line number: if the file changes and a line moves,
+# the finding comes back and has to be reviewed again. That is deliberate: noise
+# is better than blindness.
+#
+# A new fingerprint goes in here only after checking that it is not a real secret.
+# For a real key, the answer is not this file: rotate the key.
+
+test/gates/secret-shaped-literal.test.js:aws-access-token:45
+test/gates/secret-shaped-literal.test.js:aws-access-token:69
+test/gates/secret-shaped-literal.test.js:aws-access-token:72
+test/gates/secret-shaped-literal.test.js:aws-access-token:78
+test/gates/secret-shaped-literal.test.js:generic-api-key:29
+test/gates/secret-shaped-literal.test.js:generic-api-key:37
+test/gates/secret-shaped-literal.test.js:generic-api-key:53
