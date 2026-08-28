@@ -139,7 +139,9 @@ test('--install-hooks writes a runnable commit-msg hook', () => {
     const contents = fs.readFileSync(hook, 'utf8');
     assert.match(contents, /agent-code-gates/);
     assert.match(contents, /--message-file "\$1"/);
-    assert.ok((fs.statSync(hook).mode & 0o111) !== 0, 'hook should be executable');
+    if (process.platform !== 'win32') {
+      assert.ok((fs.statSync(hook).mode & 0o111) !== 0, 'hook should be executable');
+    }
   } finally {
     repo.destroy();
   }
